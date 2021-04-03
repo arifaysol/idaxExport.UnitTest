@@ -7,18 +7,11 @@ using System.Text;
 namespace Export.UnitTest
 {
     [TestFixture]
-    public class Test1: TestGeneric<idaxScenarios,IDAX_SCENARIOS>
+    public class Test2 : TestGeneric<idaxEntitlements, IDAX_ENTITLEMENTS>
     {
         public override void CompareLineBaseLineLatestRows()
         {
             throw new NotImplementedException();
         }
-
-        [TestCase]
-        public void TestLogin2()
-        {
-            Assert.AreEqual(1, 1);
-        }
-        
     }
 }
