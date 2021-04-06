@@ -9,13 +9,13 @@ namespace Database.Models
     }
     public class idaxScenarios
     {
-        [Key, Column(Order = 0)]
+        //[Key, Column(Order = 0)]
         public System.Guid ScenarioId { get; set; }
 
         public string ScenarioName { get; set; }
-        [Key, Column(Order = 1)]
+        //[Key, Column(Order = 1)]
         public System.DateTime UpdateDate { get; set; }
-        [Key, Column(Order = 2)]
+        [Key]
         public System.Guid UpdateGuid { get; set; }
         public Nullable<System.DateTime> AssignedDate { get; set; }
         public string RunState { get; set; }
@@ -410,11 +410,11 @@ namespace Database.Models
             get;
             set;
         }
-        public decimal? AssetWeight
+        public decimal AssetWeight
         {
             get;
             set;
-        }
+        } = 0;
         public int? NumUsers
         {
             get;
@@ -435,16 +435,16 @@ namespace Database.Models
             get;
             set;
         }
-        public decimal? DeptVar
+        public decimal DeptVar
         {
             get;
             set;
-        }
-        public decimal? RoleVar
+        } = 0;
+        public decimal RoleVar
         {
             get;
             set;
-        }
+        } = 0;
         public Guid ScenarioId
         {
             get;
@@ -676,7 +676,7 @@ namespace Database.Models
         {
             get;
             set;
-        }
+        } = 0;
         public string NextGroup
         {
             get;
@@ -686,7 +686,7 @@ namespace Database.Models
         {
             get;
             set;
-        }
+        } = 0;
         public string UserId
         {
             get;
@@ -728,6 +728,7 @@ namespace Database.Models
             set;
         }
     }
+    [Table("idaxOrganization", Schema = "dbo")]
     public class idaxOrganization
     {
         public string UserId
@@ -775,7 +776,7 @@ namespace Database.Models
             get;
             set;
         }
-        public decimal? AssetRisk
+        public decimal AssetRisk
         {
             get;
             set;
@@ -1189,19 +1190,19 @@ namespace Database.Models
             get;
             set;
         }
-        [Key, Column(Order = 1)]
+        //[Key, Column(Order = 1)]
         public string SettingValue
         {
             get;
             set;
         }
-        [Key, Column(Order = 2)]
+        [Key, Column(Order = 1)]
         public string ScenarioId
         {
             get;
             set;
         }
-        [Key, Column(Order = 3)]
+        [Key, Column(Order = 2)]
         public string UpdateGuid
         {
             get;

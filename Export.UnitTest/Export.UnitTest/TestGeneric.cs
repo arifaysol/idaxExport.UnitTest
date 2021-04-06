@@ -1,31 +1,33 @@
-﻿using Database;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Database.Repositories;
 using NUnit.Framework;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Export.UnitTest
 {
-    [TestFixture]
-    public abstract class TestGeneric<DBO,IDAX>
-        where DBO:class
-        where IDAX: class
+    public abstract class TestGeneric
     {
+        public abstract long CountOfDbo { get; set; }
+        public abstract long CountOfIdx { get; set; }
 
         [SetUp]
         public void SetUp()
         {
-            // Call DI at here
+            if (!RegisterService.WasInjected)
+            {
+                RegisterService.Register();
+            }
         }
         [TestCase]
-        public virtual void CompareCountOfRows(IEnumerable<DBO> dbos, IEnumerable<IDAX> idxs)
+        public virtual async Task CompareCountOfRows()
         {
-            Assert.AreEqual(dbos.Count(), idxs.Count());
+            await Task.Run(() =>
+            {
+                Assert.AreEqual(CountOfDbo, CountOfIdx);
+            });
         }
-        [TestCase]
-        public abstract void CompareLineBaseLineLatestRows();
+
+        public abstract Task CompareLineBaseLineLatestRows();
+
     }
 }

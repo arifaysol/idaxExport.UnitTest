@@ -260,12 +260,12 @@ namespace Database.Models
         {
             get;
             set;
-        }
+        } = string.Empty;
         public string Suffix
         {
             get;
             set;
-        }
+        } = string.Empty;
         public string Weight
         {
             get;
@@ -465,7 +465,7 @@ namespace Database.Models
         {
             get;
             set;
-        }
+        } = string.Empty;
         public string NextGroup
         {
             get;
@@ -475,7 +475,7 @@ namespace Database.Models
         {
             get;
             set;
-        }
+        } = string.Empty;
         public string UserId
         {
             get;

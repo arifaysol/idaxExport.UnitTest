@@ -69,7 +69,7 @@ namespace Database.Repositories
     {
 
     }
-    public interface IDuplicateAssetsRepo : IBaseRepo<idaxDuplicateAssets, IDAX_ENTITLEMENTS>
+    public interface IDuplicateAssetsRepo : IBaseRepo<idaxDuplicateAssets, IDAX_DUPLICATE_ASSETS>
     {
 
     }
