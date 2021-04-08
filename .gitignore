@@ -34,3 +34,10 @@ Export.UnitTest/Export.UnitTest/obj/Debug/netcoreapp3.1/Export.UnitTest.csproj.C
 Export.UnitTest/Export.UnitTest/bin/Debug/netcoreapp3.1/nunit_random_seed.tmp
 Export.UnitTest/Export.UnitTest/bin/Debug/netcoreapp3.1/testhost.exe
 Export.UnitTest/.vs/Export.UnitTest/DesignTimeBuild/.dtbcache.v2
+/Export.UnitTest/Database/bin
+/Export.UnitTest/Export.UnitTest/bin
+/Export.UnitTest/Export.UnitTest/obj
+/Export.UnitTest/Database/obj
+/Export.UnitTest/.vs
+Export.UnitTest/Database/obj/Debug/netcoreapp3.1/.NETCoreApp,Version=v3.1.AssemblyAttributes.cs
+Export.UnitTest/Database/obj/Debug/netcoreapp3.1/.NETCoreApp,Version=v3.1.AssemblyAttributes.cs

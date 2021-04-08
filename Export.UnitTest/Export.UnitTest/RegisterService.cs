@@ -1,5 +1,10 @@
-﻿using Database.Repositories;
+﻿using Database;
+using Database.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Configuration;
 using System.Linq;
 
 namespace Export.UnitTest
@@ -9,7 +14,11 @@ namespace Export.UnitTest
         static ServiceProvider myServices { get; set; }
         public static void Register()
         {
+            var _config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
             myServices = new ServiceCollection()
+                    .AddDbContext<MyDbContext>(options
+                                    => options.UseSqlServer(_config["ConnectionString:DATABASE"].ToString()))
                     .AddSingleton<IScenarioRepo, ScenarioRepo>()
                     .AddSingleton<ISettingRepo, SettingRepo>()
                     .AddSingleton<IEntitlementsRepo, EntitlementRepo>()

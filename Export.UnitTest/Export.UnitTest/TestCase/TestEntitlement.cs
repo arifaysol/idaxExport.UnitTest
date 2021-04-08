@@ -21,11 +21,11 @@ namespace Export.UnitTest
         public new void SetUp()
         {
             var scenarioId = RegisterService.latest_ScenarioId;
-            _CountOfDbo = RegisterService.entitlementRepo.GetAll_dbo().Count();
-            _CountOfIdx = RegisterService.entitlementRepo.GetAll_idaxExport().Count();
-
             dbo = RegisterService.entitlementRepo.GetAll_dbo().Where(w => scenarioId.Equals(w.ScenarioId.ToString())).ToList();
             idx = RegisterService.entitlementRepo.GetAll_idaxExport().Where(w => scenarioId.Equals(w.ScenarioId)).ToList();
+
+            _CountOfDbo = dbo.Count();
+            _CountOfIdx = idx.Count();
         }
 
         [TestCase]

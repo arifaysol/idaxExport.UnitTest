@@ -6,15 +6,11 @@ namespace Database
 {
     public class MyDbContext : DbContext
     {
-        public MyDbContext() : base()
+        public MyDbContext(DbContextOptions<MyDbContext> options)
+            : base(options)
         {
-
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=v1.8.10;Integrated Security=true");
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -147,8 +143,8 @@ namespace Database
                     e.Department,
                     e.Asset,
                     e.Source,
-                    e.Prefix,
-                    e.Suffix,
+                    //e.Prefix,
+                    //e.Suffix,
                     e.UpdateGuid
                 });
             modelBuilder.Entity<idaxTemplateRole>()
@@ -169,8 +165,8 @@ namespace Database
                     e.Role,
                     e.Asset,
                     e.Source,
-                    e.Prefix,
-                    e.Suffix,
+                    //e.Prefix,
+                    //e.Suffix,
                     e.UpdateGuid
                 });
         }

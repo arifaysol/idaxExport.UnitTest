@@ -18,13 +18,13 @@ namespace Database.Repositories
         where DBO : class
         where IDAXEXPORT : class
     {
-        DbContext context;
+        protected readonly DbContext context;
         DbSet<DBO> _dbo;
         DbSet<IDAXEXPORT> _idaxexport;
 
-        public BaseRepo()
+        public BaseRepo(DbContext _context)
         {
-            context = new MyDbContext();
+            context = _context;
             _dbo = context.Set<DBO>();
             _idaxexport = context.Set<IDAXEXPORT>();
         }

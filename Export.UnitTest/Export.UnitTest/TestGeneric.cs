@@ -19,7 +19,7 @@ namespace Export.UnitTest
             }
         }
         [TestCase]
-        public virtual async Task CompareCountOfRows()
+        public virtual async Task CompareCountOfRows_LatestRun()
         {
             await Task.Run(() =>
             {

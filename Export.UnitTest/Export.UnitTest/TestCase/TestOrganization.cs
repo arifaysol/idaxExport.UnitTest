@@ -14,21 +14,36 @@ namespace Export.UnitTest
     {
         long _CountOfDbo;
         long _CountOfIdx;
+        string scenarioId;
         public override long CountOfDbo { get => _CountOfDbo; set => value = _CountOfDbo; }
         public override long CountOfIdx { get => _CountOfIdx; set => value = _CountOfIdx; }
 
-        IEnumerable<idaxOrganization> dbo;
-        IEnumerable<IDAX_ORGANIZATION> idx;
+        IEnumerable<idaxOrganization> dbo_org;
+        IEnumerable<IDAX_ORGANIZATION> idx_org;
 
+        IEnumerable<idaxEntitlements> dbo_ent;
+        IEnumerable<IDAX_ENTITLEMENTS> idx_ent;
+
+        IEnumerable<IDAX_TEMPLATE_DEPARTMENT> idx_tmplt_dept;
+        IEnumerable<idaxTemplateDepartment> dbo_tmplt_dept;
+
+        IEnumerable<IDAX_TEMPLATE_ROLE> idx_tmplt_role;
+        IEnumerable<idaxTemplateRole> dbo_tmplt_role;
         [SetUp]
         public new void SetUp()
         {
-            var scenarioId = RegisterService.latest_ScenarioId;
-            _CountOfDbo = RegisterService.organizationRepo.GetAll_dbo().Count();
-            _CountOfIdx = RegisterService.organizationRepo.GetAll_idaxExport().Count();
+            scenarioId = RegisterService.latest_ScenarioId;
+            dbo_org = RegisterService.organizationRepo.GetAll_dbo().Where(w => scenarioId.Equals(w.ScenarioId.ToString())).ToList();
+            idx_org = RegisterService.organizationRepo.GetAll_idaxExport().Where(w => scenarioId.Equals(w.ScenarioId)).ToList();
 
-            dbo = RegisterService.organizationRepo.GetAll_dbo().Where(w => scenarioId.Equals(w.ScenarioId.ToString())).ToList();
-            idx = RegisterService.organizationRepo.GetAll_idaxExport().Where(w => scenarioId.Equals(w.ScenarioId)).ToList();
+            _CountOfDbo = dbo_org.Count();
+            _CountOfIdx = idx_org.Count();
+
+            idx_ent = RegisterService.entitlementRepo.GetAll_idaxExport().Where(w => scenarioId.Equals(w.ScenarioId)).ToList();
+            dbo_ent = RegisterService.entitlementRepo.GetAll_dbo().Where(w => scenarioId.Equals(w.ScenarioId)).ToList();
+
+            idx_tmplt_dept = RegisterService.templateDepartmentRepo.GetAll_idaxExport().Where(w => scenarioId.Equals(w.ScenarioId)).ToList();
+
         }
 
         [TestCase]
@@ -36,12 +51,12 @@ namespace Export.UnitTest
         {
             await Task.Run(() =>
             {
-                if (dbo != null && idx != null)
+                if (dbo_org != null && idx_org != null)
                 {
 
-                    foreach (var _idx in idx)
+                    foreach (var _idx in idx_org)
                     {
-                        var _dbo = dbo.Where(w => _idx.UserId.Equals(w.UserId)
+                        var _dbo = dbo_org.Where(w => _idx.UserId.Equals(w.UserId)
                                             && _idx.UpdateGuid.Equals(w.UpdateGuid.ToString())
                                         ).FirstOrDefault();
                         if (_dbo != null)
@@ -90,6 +105,137 @@ namespace Export.UnitTest
                 else
                 {
                     Assert.Fail("dbo OR idaxExport schema is NULL");
+                }
+            });
+        }
+
+        [TestCase]
+        public async Task Compare_CountOf_Assignment_idx_schema()
+        {
+            
+            await Task.Run(() =>
+            {
+                foreach (var item in idx_org)
+                {
+                    var _res_idx_ent = idx_ent.Where(w => item.UserId.Equals(w.UserId)).Count();
+                    Assert.AreEqual(item.Assignments, _res_idx_ent.ToString(),$"Key = {item.UserId}");
+                }
+            });
+        }
+
+        [TestCase]
+        public async Task Compare_CountOf_UserDeptTemplateCount_idx_schema()
+        {
+
+            await Task.Run(() =>
+            {
+                foreach (var item in idx_org)
+                {
+                    var _res_idx_ent = idx_ent.Where(w => 
+                                                item.UserId.Equals(w.UserId) 
+                                                && w.InDeptTemplate.HasValue 
+                                                && w.InDeptTemplate.Value.Equals(true)
+                                            ).Count();
+                    Assert.AreEqual(item.UserDeptTemplateCount, _res_idx_ent, $"Key = {item.UserId}");
+                }
+            });
+        }
+
+        [TestCase]
+        public async Task Compare_CountOf_DeptTemplateCount_idx_schema()
+        {
+
+            await Task.Run(() =>
+            {
+                foreach (var item in idx_org)
+                {
+                    var _res_idx_ent = idx_tmplt_dept.Where(w =>
+                                                item.Department.Equals(w.Department)
+                                                && !w.Asset.Equals("-")
+                                            ).Count();
+                    Assert.AreEqual(item.DeptTemplateCount, _res_idx_ent, $"Key = {item.UserId}");
+                }
+            });
+        }
+
+        [TestCase]
+        public async Task Compare_CountOf_DeptAssetCount_idx_schema()
+        {
+
+            await Task.Run(() =>
+            {
+                var res_grouped = idx_org.GroupBy(g => g.Department).Select(s => new
+                {
+                    s.Key,
+                    DeptAssetCount = s.FirstOrDefault()?.DeptAssetCount,
+                    datas = s.Select(s=>s.UserId).ToArray()
+                });
+
+
+                foreach (var item in res_grouped)
+                {
+                    var check = idx_ent.Where(w => item.datas.Contains(w.UserId))
+                                        .GroupBy(g => new
+                                        {
+                                            g.Asset,
+                                            g.Source,
+                                            g.Prefix,
+                                            g.Suffix,
+                                            g.ShortDescription,
+                                            g.LongDescription
+                                        }).Count();
+                    Assert.AreEqual(item.DeptAssetCount, check, $"Key = {item.Key}");
+                }
+            });
+        }
+
+        [TestCase]
+        public async Task Compare_CountOf_UserRoleTemplateCount_idx_schema()
+        {
+
+            await Task.Run(() =>
+            {
+                foreach (var item in idx_org)
+                {
+                    var _res_idx_ent = idx_ent.Where(w =>
+                                                item.UserId.Equals(w.UserId)
+                                                && w.InRoleTemplate.HasValue
+                                                && w.InRoleTemplate.Value.Equals(true)
+                                            ).Count();
+                    Assert.AreEqual(item.UserRoleTemplateCount, _res_idx_ent, $"Key = {item.UserId}");
+                }
+            });
+        }
+
+        // Missing Compare_CountOf_RoleTemplateCount_idx_schema
+
+        [TestCase]
+        public async Task Compare_CountOf_RoleAssetCount_idx_schema()
+        {
+
+            await Task.Run(() =>
+            {
+                var res_grouped = idx_org.GroupBy(g => g.Role).Select(s => new
+                {
+                    s.Key,
+                    RoleAssetCount = s.FirstOrDefault()?.RoleAssetCount,
+                    datas = s.Select(s => s.UserId).ToArray()
+                });
+
+
+                foreach (var item in res_grouped)
+                {
+                    var check = idx_ent.Where(w => item.datas.Contains(w.UserId))
+                                        .GroupBy(g => new
+                                        {
+                                            g.Asset,
+                                            g.Source,
+                                            g.Prefix,
+                                            g.Suffix,
+                                            g.ShortDescription,
+                                            g.LongDescription
+                                        }).Count();
+                    Assert.AreEqual(item.RoleAssetCount, check, $"Key = {item.Key}");
                 }
             });
         }

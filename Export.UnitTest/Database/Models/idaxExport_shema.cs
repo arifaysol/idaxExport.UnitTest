@@ -866,7 +866,7 @@ namespace Database.Models
         {
             get;
             set;
-        }
+        } = string.Empty;
         public string Asset
         {
             get;
@@ -876,7 +876,7 @@ namespace Database.Models
         {
             get;
             set;
-        }
+        } = string.Empty;
         public string Score
         {
             get;
